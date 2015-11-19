@@ -1,0 +1,12 @@
+- name: PreConfiguration
+  hosts: all
+  sudo: True
+  tasks:
+	- name: add packages for security requirements
+  	  yum: name={{ item }} state=present
+	  with_items:
+   		- ntp
+		- screen
+
+	- name: 'start synchronizing the system clock'
+	  service: name=ntpd state=started enabled=yes
