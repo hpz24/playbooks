@@ -14,11 +14,6 @@
   yum: name={{ item }} state=latest
   with_items: sysadmin_tools
 
-#- name: Set timezone to {{ timezone }}
-#  when: ansible_date_time.tz != '{{ timezone }}'
-#  command: timedatectl set-timezone {{ timezone }}
-#  tags: tz
-
 - name: Set the default text editor for {{ ansible_ssh_user }} to {{ text_editor }}
   # Some VPS providers ship Centos 7 with Nano as default, some with Vim
   lineinfile:
@@ -37,10 +32,28 @@
   service: name=crond state=started enabled=yes
   tags: cronie
 
-- name: Set crontab MAILTO variable to {{ cron_email_address }}
-  # If changing MAILTO, don't forget to reboot to get cron to work.
-  # This is a hack because Ansible doesn't have a good way
-  # to handle environment variables for cron. Since cron jobs are appended
-  # to crontab, just fake a task immediately after installing/enabling cron.
-  cron: name="MAILTO section" minute="MAILTO={{ cron_email_address }}" hour="" day="" month="" weekday="" job=""
-  tags: cronie
+- name: Start synchronizing the system Clock
+  service: name=ntpd state=started enabled=yes
+  tags: ntpd
+
+- name: Customizing SELinux
+  lineinfile: dest=/etc/selinux/config regexp=^SELINUX= line=SELINUX=permissive
+
+- name: sshd configuration file update
+  template: src=./files/sshd_config.j2
+    dest=/etc/ssh/sshd_config
+    backup=yes
+    owner=0 group=0 mode=0644
+  notify:
+  - restart sshd
+
+#- name: Open port in firewall
+#  firewalld: port=22/tcp permanent=true state=enabled immediate=true
+#  when: not ( security_firewall is defined and not security_firewall )
+
+- name: Rsyslog-Config
+  lineinfile: dest=/etc/rsyslog.conf regexp="^#*.* @@remote-host:514" line="*.* @192.168.24.2:514"
+
+- name: copy myglobalenv.sh with Special Modifications
+  copy: src=./files/myglobalenv.sh dest=/etc/profile.d
+

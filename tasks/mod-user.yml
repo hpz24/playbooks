@@ -1,0 +1,18 @@
+---
+- user: name=hpz comment="Hanspeter Zach" shell=/bin/bash groups=wheel append=yes
+
+- name: Placing SSH-Key
+  authorized_key: user=hpz key="{{ lookup('file', './files/authorized_keys.hpz.pub') }}"
+
+- name: copy .screenrc Config-File
+  copy: src=./files/screenrc dest=/home/{{ main_user }}/.screenrc
+
+- name: update .bashrc wich Screen-Konfig
+  blockinfile:
+    dest: /home/{{ main_user }}/.bashrc
+    backup: yes
+    content: |
+       if [ "$TERM" != "screen" ] && [ "$SSH_CONNECTION" != "" ]; then /usr/bin/screen -S sshscreen -d -R && exit
+       fi
+
+

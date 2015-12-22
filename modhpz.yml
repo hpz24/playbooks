@@ -8,7 +8,7 @@
     - "vars/main.yml"
 
   tasks:
-    - include: tasks/main.yml
+    - include: tasks/mod-user.yml
 
   handlers:
     - include: handlers/main.yml

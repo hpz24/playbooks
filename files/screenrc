@@ -1,0 +1,13 @@
+autodetach on
+startup_message off
+crlf off
+multiuser off
+defscrollback 3000
+silencewait 15
+bufferfile $HOME/.screen_exchange
+shell -$SHELL
+pow_detach_msg "Screen session of \$LOGNAME \$:cr:\$:nl:ended."
+bind = resize =
+bind + resize +3
+bind - resize -3
+caption always "%{= gk}%-Lw%{= bW}%60> %n%f* %t %{-}%+Lw%< %= %{= kg} %H %l %{= gk} %0c:%s %{-}"

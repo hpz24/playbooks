@@ -1,0 +1,23 @@
+LoginGraceTime 2m
+PermitRootLogin no
+StrictModes yes
+RSAAuthentication yes
+PubkeyAuthentication yes
+AuthorizedKeysFile	.ssh/authorized_keys
+RhostsRSAAuthentication no
+HostbasedAuthentication no
+IgnoreRhosts yes
+PasswordAuthentication yes
+AllowUsers hpz ao
+ChallengeResponseAuthentication no 
+GSSAPIAuthentication yes
+GSSAPICleanupCredentials no
+UsePAM yes
+X11Forwarding yes
+PrintMotd no
+TCPKeepAlive yes
+UsePrivilegeSeparation sandbox		# Default for new installations.
+ClientAliveInterval 300
+ClientAliveCountMax 0
+UsePAM yes
+Subsystem	sftp	/usr/libexec/openssh/sftp-server
